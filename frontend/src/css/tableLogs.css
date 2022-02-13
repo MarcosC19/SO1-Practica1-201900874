@@ -1,0 +1,9 @@
+.contentTable {
+  width: 60%;
+  height: 90%;
+  position: absolute;
+  top: 5%;
+  left: 40%;
+  background-color: white;
+  overflow: scroll;
+}

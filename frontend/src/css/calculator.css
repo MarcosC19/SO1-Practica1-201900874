@@ -1,0 +1,127 @@
+.contentCalculator {
+  width: 30%;
+  height: 70%;
+  position: absolute;
+  top: 15%;
+  left: 5%;
+  background-color: #344b73;
+}
+
+#texto {
+  width: 78%;
+  height: 7.5%;
+  position: absolute;
+  top: 4%;
+  left: 10.25%;
+  font-size: 20pt;
+  color: black;
+  text-align: end;
+}
+
+.fila0 {
+  position: absolute;
+  font-size: 14pt;
+  background-color: darkgrey;
+  color: black;
+  border: none;
+}
+
+#cero {
+  width: 40%;
+  height: 16%;
+  top: 80%;
+  left: 10%;
+}
+
+#punto {
+  width: 18.3333%;
+  height: 16%;
+  top: 80%;
+  left: 50%;
+}
+
+#igual {
+  width: 21.6667%;
+  height: 45%;
+  top: 51%;
+  left: 68.3333%;
+}
+
+.fila1 {
+  width: 19.4444%;
+  height: 16%;
+  position: absolute;
+  top: 64%;
+  font-size: 14pt;
+  background-color: darkgrey;
+  color: black;
+  border: none;
+}
+
+#col1 {
+  left: 10%;
+}
+
+#col2 {
+  left: 29.44444%;
+}
+
+#col3 {
+  left: 48.8888%;
+}
+
+.fila2 {
+  width: 19.4444%;
+  height: 16%;
+  position: absolute;
+  top: 48%;
+  font-size: 14pt;
+  background-color: darkgrey;
+  color: black;
+  border: none;
+}
+
+.fila3 {
+  width: 19.4444%;
+  height: 16%;
+  position: absolute;
+  top: 32%;
+  font-size: 14pt;
+  background-color: darkgrey;
+  color: black;
+  border: none;
+}
+
+#division {
+  width: 21.6667%;
+  height: 19%;
+  top: 32%;
+  left: 68.3333%;
+}
+
+.fila4 {
+  width: 20%;
+  height: 16%;
+  position: absolute;
+  top: 16%;
+  font-size: 14pt;
+  background-color: darkgrey;
+  color: black;
+  border: none;
+}
+
+#col14 {
+  left: 10%;
+}
+
+#col24 {
+  left: 30%;
+}
+
+#col34 {
+  left: 50%;
+}
+
+#col4 {
+  left: 70%;
+}
