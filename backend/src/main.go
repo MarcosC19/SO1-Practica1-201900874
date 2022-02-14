@@ -49,7 +49,7 @@ func getOperation(w http.ResponseWriter, r *http.Request) {
 func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/", home)
-	router.HandleFunc("/Operation", getOperation)
+	router.HandleFunc("/Operation", getOperation).Methods("POST")
 	fmt.Println("Server on port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
 }
