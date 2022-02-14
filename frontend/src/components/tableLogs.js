@@ -1,8 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import '../css/tableLogs.css'
 import { Table } from 'reactstrap'
 
-function TableLogs() {
+function TableLogs(props) {
+    const [operations, setOperations] = useState({
+        operations: []
+    })
+
+    const [updateOpt, setUpdateOpt] = props.myState
+
+    function getOperations() {
+        fetch('http://localhost:5000/getOperations')
+            .then(res => res.json())
+            .then(data => {
+                if (data.data != null) {
+                    setOperations({
+                        operations: data.data
+                    })
+                }
+            })
+    }
+
+    useEffect(() => {
+        getOperations()
+        setUpdateOpt(false)
+    }, [updateOpt, setUpdateOpt])
+
     return (
         <div className="contentTable">
             <Table>
@@ -16,6 +39,20 @@ function TableLogs() {
                     </tr>
                 </thead>
                 <tbody>
+                    {
+                        operations.operations.map(operation => {
+                            var dateFinal = new Date(operation.Date)
+                            return (
+                                <tr key={operation.ID}>
+                                    <td>{operation.Number1}</td>
+                                    <td>{operation.Number2}</td>
+                                    <td>{operation.Operation}</td>
+                                    <td>{operation.Result}</td>
+                                    <td>{dateFinal.toLocaleString()}</td>
+                                </tr>
+                            )
+                        })
+                    }
                 </tbody>
             </Table>
         </div>

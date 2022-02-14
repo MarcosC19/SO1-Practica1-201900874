@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -20,26 +21,29 @@ const (
 )
 
 type operation struct { // OPERATION JSON STRUCT
-	Num1   float32 `json:"num1"`
-	Num2   float32 `json:"num2"`
-	Option string  `json:"operation"`
-	Result float32 `json:"result"`
+	Num1   float32   `json:"num1"`
+	Num2   float32   `json:"num2"`
+	Option string    `json:"operation"`
+	Result float32   `json:"result"`
+	Date   time.Time `json:"date"`
 }
 
 type modelMongo struct { // MODEL STRUCT COLLECTION WITHOUT ID
-	ID        string  `bson:"-"`
-	Number1   float32 `bson:"number1"`
-	Number2   float32 `bson:"number2"`
-	Operation string  `bson:"operation"`
-	Result    float32 `bson:"result"`
+	ID        string    `bson:"-"`
+	Number1   float32   `bson:"number1"`
+	Number2   float32   `bson:"number2"`
+	Operation string    `bson:"operation"`
+	Result    float32   `bson:"result"`
+	Date      time.Time `bson:"date"`
 }
 
 type modelMongoR struct { // MODEL STRUCT COLLECTION WITH ID
-	ID        string  `bson:"_id"`
-	Number1   float32 `bson:"number1"`
-	Number2   float32 `bson:"number2"`
-	Operation string  `bson:"operation"`
-	Result    float32 `bson:"result"`
+	ID        string    `bson:"_id"`
+	Number1   float32   `bson:"number1"`
+	Number2   float32   `bson:"number2"`
+	Operation string    `bson:"operation"`
+	Result    float32   `bson:"result"`
+	Date      time.Time `bson:"date"`
 }
 
 type listOperation struct { // DATA RETURN COLLECTION
@@ -68,6 +72,7 @@ func saveOperation(newOperation operation) {
 		Number2:   newOperation.Num2,
 		Operation: newOperation.Option,
 		Result:    newOperation.Result,
+		Date:      newOperation.Date,
 	}
 
 	// CONNECTION TO DATABASE AND COLLECTION
@@ -181,6 +186,11 @@ func getOperations(w http.ResponseWriter, r *http.Request) {
 	var retorno = listOperation{
 		Data: results,
 	}
+
+	// SET HEADERS
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.WriteHeader(http.StatusOK)
 
 	// RETURNING THE REQUEST
 	json.NewEncoder(w).Encode(retorno)

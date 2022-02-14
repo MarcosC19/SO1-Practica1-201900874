@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import '../css/calculator.css'
 
-function Calculator() {
+function Calculator(props) {
     const [values, setValues] = useState({
         num1: '',
         num2: '',
         operation: '',
-        result: ''
+        result: '',
+        date: ''
     })
 
     function changeValue(e) { // USE TO SET IN NUMBER1 THE DATA STRING
@@ -16,7 +17,8 @@ function Calculator() {
             num1: lastValue.num1,
             num2: newValue,
             operation: lastValue.operation,
-            result: ''
+            result: '',
+            date: ''
         })
     }
 
@@ -26,7 +28,8 @@ function Calculator() {
             num1: lastValue.num2,
             num2: '',
             operation: e.target.value,
-            result: ''
+            result: '',
+            date: ''
         })
     }
 
@@ -34,7 +37,8 @@ function Calculator() {
         const lastJSON = {
             num1: parseFloat(values.num1),
             num2: parseFloat(values.num2),
-            operation: values.operation
+            operation: values.operation,
+            date: new Date()
         }
         fetch('http://localhost:5000/Operation', {
             method: 'POST',
@@ -46,8 +50,12 @@ function Calculator() {
                     num1: '',
                     num2: data.result.toString(),
                     operation: '',
-                    result: ''
+                    result: '',
+                    date: ''
                 })
+            })
+            .then(() => {
+                props.myState[1](true)
             })
     }
 
@@ -56,7 +64,8 @@ function Calculator() {
             num1: '',
             num2: '',
             operation: '',
-            result: ''
+            result: '',
+            date: ''
         })
     }
 
