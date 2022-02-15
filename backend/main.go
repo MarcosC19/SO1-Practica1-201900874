@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -16,7 +17,6 @@ import (
 )
 
 const (
-	host     = "192.168.1.11"
 	port     = 27017
 	user     = "mongoadmin"
 	password = "practica1-so"
@@ -53,6 +53,11 @@ type listOperation struct { // DATA RETURN COLLECTION
 }
 
 func saveOperation(newOperation operation) {
+	host, defined := os.LookupEnv("HOSTIP")
+	if !defined {
+		log.Fatal(defined)
+	}
+
 	// OPENING CONNECTION TO MONGODB
 	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", user, password, host, port))
 	client, err := mongo.Connect(context.TODO(), clientOpts)
@@ -135,6 +140,11 @@ func doOperation(w http.ResponseWriter, r *http.Request) {
 }
 
 func getOperations(w http.ResponseWriter, r *http.Request) {
+	host, defined := os.LookupEnv("HOSTIP")
+	if !defined {
+		log.Fatal(defined)
+	}
+
 	// OPENING CONNECTION TO MONGODB
 	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", user, password, host, port))
 	client, err := mongo.Connect(context.TODO(), clientOpts)

@@ -10,7 +10,7 @@ function TableLogs(props) {
     const [updateOpt, setUpdateOpt] = props.myState
 
     function getOperations() {
-        fetch('http://localhost:5000/getOperations')
+        fetch(`http://${process.env.REACT_APP_HOSTIP}:5000/getOperations`)
             .then(res => res.json())
             .then(data => {
                 if (data.data != null) {

@@ -40,7 +40,7 @@ function Calculator(props) {
             operation: values.operation,
             date: new Date()
         }
-        fetch('http://localhost:5000/Operation', {
+        fetch(`http://${process.env.REACT_APP_HOSTIP}:5000/Operation`, {
             method: 'POST',
             body: JSON.stringify(lastJSON)
         })

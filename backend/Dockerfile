@@ -4,6 +4,8 @@ WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
 
+ENV HOSTIP=192.168.1.11
+
 RUN go mod download
 
 COPY . .
