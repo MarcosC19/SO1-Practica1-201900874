@@ -16,8 +16,10 @@ import (
 )
 
 const (
-	host = "localhost"
-	port = 27017
+	host     = "192.168.1.11"
+	port     = 27017
+	user     = "mongoadmin"
+	password = "practica1-so"
 )
 
 type operation struct { // OPERATION JSON STRUCT
@@ -52,7 +54,7 @@ type listOperation struct { // DATA RETURN COLLECTION
 
 func saveOperation(newOperation operation) {
 	// OPENING CONNECTION TO MONGODB
-	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d", host, port))
+	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", user, password, host, port))
 	client, err := mongo.Connect(context.TODO(), clientOpts)
 	if err != nil {
 		log.Fatal(err)
@@ -134,7 +136,7 @@ func doOperation(w http.ResponseWriter, r *http.Request) {
 
 func getOperations(w http.ResponseWriter, r *http.Request) {
 	// OPENING CONNECTION TO MONGODB
-	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%d", host, port))
+	clientOpts := options.Client().ApplyURI(fmt.Sprintf("mongodb://%s:%s@%s:%d", user, password, host, port))
 	client, err := mongo.Connect(context.TODO(), clientOpts)
 
 	if err != nil {
