@@ -55,7 +55,7 @@ type listOperation struct { // DATA RETURN COLLECTION
 func saveOperation(newOperation operation) {
 	host, defined := os.LookupEnv("HOSTIP")
 	if !defined {
-		log.Fatal(defined)
+		host = "localhost"
 	}
 
 	// OPENING CONNECTION TO MONGODB
@@ -142,7 +142,7 @@ func doOperation(w http.ResponseWriter, r *http.Request) {
 func getOperations(w http.ResponseWriter, r *http.Request) {
 	host, defined := os.LookupEnv("HOSTIP")
 	if !defined {
-		log.Fatal(defined)
+		host = "localhost"
 	}
 
 	// OPENING CONNECTION TO MONGODB
