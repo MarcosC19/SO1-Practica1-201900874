@@ -61,7 +61,11 @@ La práctica fue realizada con el fin de comprender y practicar docker mediante 
       - [doOperation](#dooperation)
       - [getOperations](#getoperations-1)
       - [main](#main)
+    - [Observaciones](#observaciones-2)
 - [Manual de Usuario](#manual-de-usuario)
+  - [Requerimientos](#requerimientos-1)
+  - [Archivo docker-compose](#archivo-docker-compose)
+  - [Funcionamiento](#funcionamiento)
 
 # Manual Técnico
 ## Requerimientos
@@ -73,7 +77,9 @@ La práctica fue realizada con el fin de comprender y practicar docker mediante 
 
 ## Arquitectura
 La aplicación se basa en la siguiente arquitectura: 
+
 <img src="./img/arquitectura.png">
+
 Donde la vista del cliente es manejada por el [Frontend](./frontend/), el cual se encuentra diseñado con [React](https://es.reactjs.org), todas las operaciones ingresadas por parte del usuario son enviadas mediante una petición POST al [Backend](./backend/), el cual fue realizado en [Golang](https://go.dev) y es el encargado de administrar la conexión entre el frontend y la base de datos en [MongoDB](https://www.mongodb.com/es).
 
 Cada una de estas partes se encuentran administradas en [Docker Hub](https://hub.docker.com) para que sea más sencillas de ubicar y descargar para su utilizacón,  la base de datos utiliza [Docker Volumes](https://docs.docker.com/storage/volumes/) para una persistencia de datos.
@@ -385,4 +391,155 @@ func main() {
 }
 ```
 
+### Observaciones
+- Cada uno de los servicios cuenta con un archivo Dockerfile, el cual es el encargado de generar la imagen para montar un contenedor en docker.
+  - [Dockerfile Frontend](./frontend/Dockerfile)
+  - [Dockerfile Backend](./backend/Dockerfile)
+- Cada uno de los servicios cuenta con un archivo .dockerignore, ya que hay ciertos archivos que no deben de estar en la imagen y deben de omitirse.
+  - [.dockerignore Frontend](./frontend/.dockerignore)
+  - [.dockerignore Backend](./backend/.dockerignore)
+- Hay un archivo [docker-compose.yml](./docker-compose.yml), el cual se encuentra como base para poder copiarlo y sustituir los valores necesarios para poder utilizar 'docker-compose up -d' y 'docker-compose down'.
+
+
 # Manual de Usuario
+
+## Requerimientos
+- Obligatorios
+  - Tener instalado Docker v20.10.12 o superior; ya que es posible obtener las imagenes y levantar los contenedores con docker-compose.
+- Opcionales
+  - Tener instalado Golang v1.16.14 o superior
+  - Tener instalado Nodejs v16.13.1 o superior
+  - Tener instalado Npm v8.3.2 o superior
+  - Tener instalado MongoDB o su contenedor en el puerto 27017
+
+## Archivo docker-compose 
+El siguiente archivo docker-compose.yml se debe de crear con la estructura especificada, modificando las partes que más adelante se detallan.
+
+```yml
+version: "3.9"
+services:
+  db:
+    image: mongo
+    container_name: dbmongo
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: practica1-so
+    ports:
+      - "27017:27017"
+    restart: always
+    volumes:
+      - CARPETA_DESEADA:/data/db
+    networks:
+      - practica1
+
+  backend:
+    image: curtex19/backend_p1_201900874
+    container_name: backend_p1_201900874
+    environment:
+      - HOSTIP=IP_COMPUTADOR
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - practica1
+
+  frontend:
+    image: curtex19/frontend_p1_201900874
+    container_name: frontend_p1_201900874
+    environment:
+      - REACT_APP_HOSTIP=IP_COMPUTADOR
+    ports:
+      - "3000:3000"
+    restart: always
+    depends_on:
+      - backend
+    networks:
+      - practica1
+
+volumes:
+  mongodata:
+
+networks:
+  practica1:
+    name: "practica1"
+    driver: bridge
+
+```
+
+Luego de crear dicho archivo se dirige hacia la ruta en la que fue creada y mediante la consola se ejecutan los siguientes comandos según lo deseado.
+
+```
+Levantar aplicación docker-compose
+docker-compose up -d
+
+Terminar aplicación docker-compose
+docker-compose down
+
+```
+
+## Funcionamiento
+Independientemente de la forma en la que se ejecute la aplicación, ya sea con Docker o levantando cada uno de los servicios por separados el funcionamiento es el mismo.
+
+Si se utiliza Docker es necesario que dentro del archivo docker-compose se modifiquen las siguientes variables de entorno para un funcionamiento correcto.
+
+```yml
+backend:
+  ...
+  environment:
+    - HOSTIP=IP_COMPUTADOR
+  ...
+
+frontend:
+  ...
+  environment:
+    - REACT_APP_HOSTIP=IP_COMPUTADOR
+  ...
+```
+
+También es necesario especificar una carpeta para poder realizar el volumen correspondiente a la base de datos.
+
+```yml
+db:
+  ...
+  volumes:
+    - CARPETA_DESEADA:/data/db
+  ...
+```
+
+Solamente las lineas especificadas son necesarias de modificar, de modificar otra linea no será posible acceder a la aplicación y no funcionará correctamente.
+
+Para acceder a la aplicación se debe de ingresar a la IP del computador en el puerto '3000', quedando una ruta como la siguiente: 
+
+```
+http://IP_COMPUTADOR:3000
+```
+
+La aplicación cuenta con una sola vista para el usuario, y es la siguiente: 
+
+<img src="-/../img/interfaz.png">
+
+Del lado izquierdo se cuenta con la calculadora que realiza las operaciones de sumar, restar, multiplicar y dividir dos numeros, cualesquiera que sean; y por el lado derecho se muestra una tabla con las operaciones recientes que se hayan realizado, especificando los numeros que se operaron, la operación realizada, el resultado final, junto con la fecha y hora en la que se realizó.
+
+Por el lado de la calculadora solamente es necesario ir presionando los numeros que se desean para las operaciones; por ejemplo si el primer número que deseamos ingresar de primero es el '452', se vería de la siguiente forma: 
+
+<img src="./img/num1.jpg">
+
+A continuación se presionará la operación que se desea, por ejemplo se desea hacer una resta con el número '220', se presionará la operación seguido del segundo número; cabe resaltar que la operación no aparecerá en pantalla, se borrará el primer número para dar paso al segundo número a ingresar.
+
+<img src="./img/num2.jpg">
+
+Posteriormente solamente es necesario presionar el botón "="(igual) para que se generé la operación y que aparezca en pantalla.
+
+<img src="./img/resultado.png">
+
+No solamente aparecerá en pantalla el resultado, si no también se mostrará la operación realizada dentro de la tabla de registros.
+
+<img src="./img/log.png">
+
+Si juntamos ambas partes tendriamos el siguiente resultado: 
+
+<img src="./img/final.png">
+
+Como se puede ver es bastante sencilla de utilizar, también se pueden ingresar números decimales, o si se cometió algún error basta con presionar la tecla 'DEL' para que se reinicie la calculadora a su estado original.
